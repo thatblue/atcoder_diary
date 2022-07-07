@@ -17,14 +17,16 @@ end
 end
 
 (0..(n - 1)).to_a.permutation.each do |p|
-  rotated_cd = Array.new(n) {Array.new(n, 0)}
+  rearranged_cd = Array.new(n) {Array.new(n, 0)}
   (0..(n - 1)).each do |i|
     (0..(n - 1)).each do |j|
-      rotated_cd[i][j] = cd[p[i]][p[j]]
+      rearranged_i = p[i]
+      rearranged_j = p[j]
+      rearranged_cd[i][j] = cd[rearranged_i][rearranged_j]
     end
   end
 
-  if ab == rotated_cd
+  if ab == rearranged_cd
     puts "Yes"
     exit
   end
