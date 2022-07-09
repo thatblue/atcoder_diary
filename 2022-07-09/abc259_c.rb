@@ -39,7 +39,7 @@ compressed_t.each_with_index do |value, index|
 
   if compressed_s[index][1] != value[1]
     if compressed_s[index][1] == 1
-      # 増やす方が1文字少ない場合は調整不可
+      # 増やしたい方が1文字しかない場合は調整不可
       puts "No"
       exit
     end
