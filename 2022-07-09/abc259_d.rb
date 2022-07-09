@@ -1,5 +1,3 @@
-include Math
-
 n = gets.chomp.to_i
 s_x, s_y, t_x, t_y = gets.chomp.split.map(&:to_i)
 
@@ -25,7 +23,7 @@ def connected_to_goal(current, destinations, connections, exclude)
 
   exclude << current
 
-  movable_circles = movable_circles(connections[current]).difference(exclude)
+  movable_circles = connections[current].difference(exclude)
 
   movable_circles.each do | next_circle |
     if connected_to_goal(next_circle, destinations, connections, exclude)
@@ -37,7 +35,8 @@ def connected_to_goal(current, destinations, connections, exclude)
 end
 
 circles = []
-circle_connections = Array.new(n) {Array.new(n, 0)}
+# circle_connections = Array.new(n) {Array.new(n, 0)}
+circle_connections = Array.new(n) {[]}
 start_circle_indexes = []
 goal_circle_indexes = []
 
@@ -58,8 +57,8 @@ goal_circle_indexes = []
       next
     end
 
-    circle_connections[index][other_index] = 1
-    circle_connections[other_index][index] = 1
+    circle_connections[index] << other_index
+    circle_connections[other_index] << index
   end
 
   circles << [x, y, r]
