@@ -29,12 +29,24 @@ n, m = gets.chomp.split.map(&:to_i)
 array = gets.chomp.split.map(&:to_i)
 ```
 
+#### 最初の要素を捨てたい場合
+
+```ruby
+*, m = gets.chomp.split.map(&:to_i)
+```
+
+#### 先頭と末尾以外の要素を捨てたい場合
+
+```ruby
+n, *, m = gets.chomp.split.map(&:to_i)
+```
+
 #### 不定な複数行の値を受け取りたい場合
 ```ruby
 n = gets.chomp.to_i
 
 array = []
-(1..n).each do
+n.times do
   array << gets.chomp.split.map(&:to_i)
 end
 ```
