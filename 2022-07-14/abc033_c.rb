@@ -2,8 +2,7 @@ formulas = gets.chomp.split('+')
 
 replace_count = 0
 formulas.each do |formula|
-  chars = formula.split('*').map(&:to_i)
-  if chars.include?(0)
+  if formula.include?("0")
     next
   end
 
