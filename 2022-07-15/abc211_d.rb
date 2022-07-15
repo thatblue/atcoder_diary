@@ -41,4 +41,4 @@ previous_depth_cities.default = 0
   end
 end
 
-p previous_depth_cities[n-1]
+p previous_depth_cities[n-1] % 1_000_000_007
