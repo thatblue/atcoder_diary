@@ -9,44 +9,36 @@ m.times do
   roads[b - 1] << a - 1
 end
 
-shortest_depths = [{0 => 1}]
-
 found_cities = {0 => 0}
-found_cities.default
-depth_of_n = nil
-path_count = 0
+found_cities.default = m + 1
+
+previous_depth_cities = {0 => 1}
+previous_depth_cities.default = 0
 
 (1..m).each do|depth|
-  previous_depth = depth - 1
+  current_depth_cities = {}
+  current_depth_cities.default = 0
 
-  current_depth = {}
-  current_depth.default = 0
-
-  shortest_depths[previous_depth].each do |previous_city_index, previous_city_paths|
+  previous_depth_cities.each do |previous_city_index, previous_city_paths|
     roads[previous_city_index].each do |to_city_index|
-      if found_cities[to_city_index] != nil && found_cities[to_city_index] < depth
+      if found_cities[to_city_index] < depth
         next
       end
 
-      if to_city_index + 1 == n
-        depth_of_n ||= depth
-        path_count += previous_city_paths
-      end
-
-      current_depth[to_city_index] += previous_city_paths
+      current_depth_cities[to_city_index] += previous_city_paths
       found_cities[to_city_index] = depth
     end
   end
 
-  shortest_depths << current_depth
+  previous_depth_cities = current_depth_cities
 
-  if depth_of_n != nil
+  if previous_depth_cities.key?(n-1)
      break
   end
 
-  if found_cities.length == n
+  if found_cities.length == n || previous_depth_cities.length == 0
     break
   end
 end
 
-p path_count
+p previous_depth_cities[n-1]
