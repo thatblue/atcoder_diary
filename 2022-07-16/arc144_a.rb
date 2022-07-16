@@ -6,14 +6,10 @@ p m
 
 digits, mod = n.divmod(4)
 
-if mod > 0
-  digits += 1
-end
-
 answer = Array.new(digits, 4)
 
 if mod > 0
-  answer[0] = mod
+  answer.unshift mod
 end
 
 puts answer.join
