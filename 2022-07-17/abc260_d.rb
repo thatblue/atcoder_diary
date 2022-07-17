@@ -1,36 +1,35 @@
 n, k = gets.chomp.split.map(&:to_i)
 cards = gets.chomp.split.map(&:to_i)
 
-card_stacks = []
 card_eaten_turn = Array.new(n, -1)
+card_stacks = []
 
-cards.each_with_index do |value, index|
+cards.each_with_index do |card, index|
+  target_stack_index = card_stacks.bsearch_index do |stack|
+    stack.last > card
+  end
+
   turn_no = index + 1
 
-  stack_index = card_stacks.bsearch_index do |stack|
-    stack[0] > value
+  if k == 1
+    # 常に除去される
+    card_eaten_turn[card - 1] = turn_no
+    next
   end
 
-  if stack_index == nil
-    card_stacks << [value]
+  if target_stack_index.nil?
+    card_stacks << [card]
   else
-    card_stacks[stack_index].unshift(value)
-  end
-
-  new_card_stacks = []
-  card_stacks.each do|stack|
-    if stack.length == k
-      stack.each do |card|
-        card_eaten_turn[card - 1] = turn_no
+    card_stacks[target_stack_index] << card
+    if card_stacks[target_stack_index].length == k
+      card_stacks[target_stack_index].each do |eaten_card|
+        card_eaten_turn[eaten_card - 1] = turn_no
       end
-    else
-      new_card_stacks << stack
+      card_stacks.delete_at(target_stack_index)
     end
   end
 
-  card_stacks = new_card_stacks
-
-  card_stacks.sort!
+  # 処理の性質上、末尾は必ず昇順でソートされるのでsort_by!する必要はない
 end
 
 card_eaten_turn.each do |turn|
