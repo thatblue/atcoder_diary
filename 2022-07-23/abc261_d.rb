@@ -3,42 +3,25 @@ x = gets.chomp.split.map(&:to_i)
 
 x.unshift(0)
 
-bonuses = []
-total_bonus = 0
+bonuses = {}
+bonuses.default = 0
 
 m.times do
   count, bonus = gets.chomp.split.map(&:to_i)
-  total_bonus += bonus
-
-  bonuses << [count, total_bonus]
+  bonuses[count] = bonus
 end
 
-best_money = 0
-m.times do |i|
-  # Ci回目のボーナスを狙い続けて成功した場合の総額を出す
-  bonus_count, total_bonus = bonuses[i]
+dp = Array.new(n + 1) { Array.new(n + 1, 0) }
 
-  reach_i_times, mod = n.divmod(bonus_count + 1)
+dp[1][0] = 0
+dp[1][1] = x[1] + bonuses[1]
 
-  # 基本の報酬の計算
-  max_reset_count = (reach_i_times - 1) * (bonus_count + 1)
-  total_base_money = 0
-  x.each_with_index do |x_i, count|
-    if max_reset_count >= count && count % (bonus_count + 1) == 0
-      next
-    end
-    total_base_money += x_i
+(2..n).each do |i|
+  dp[i][0] = dp[i - 1].max
+
+  (1..i).each do |j|
+    dp[i][j] = dp[i-1][j-1] + x[i] + bonuses[j]
   end
-
-  # ボーナス部分の計算
-  total_bonus_money = (reach_i_times - 1) * total_bonus
-
-  final_bonus_index = bonuses.bsearch_index {|bonus| bonus[0] > bonus_count + mod }
-  final_bonus_index ||= -1
-
-  total_bonus_money += bonuses[final_bonus_index][2]
-
-  best_money = [best_money, total_base_money + total_bonus_money].max
 end
 
-p best_money
+p dp[n].max
