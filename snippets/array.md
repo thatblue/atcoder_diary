@@ -13,3 +13,9 @@ array.each_with_index do |value, index|
   # do something
 end
 ```
+
+## 配列の要素を数え上げてHashにまとめたい
+```ruby
+p ["a", "b", "c", "b"].tally
+# {"a"=>1, "b"=>2, "c"=>1}
+```
