@@ -1,36 +1,25 @@
+# cf. https://atcoder.jp/contests/arc135/submissions/32824502
+
 VERY_LARGE_PRIME = 998244353
 
 x = gets.chomp.to_i
 
-if x <= 4
-  p x
-  exit
-end
+FRAGMENTS = {}
 
-x_stack = [x]
-
-fragments = {2 => 0, 3 => 0, 4 => 0}
-
-loop do
-  max_x = x_stack.pop
-  if max_x.nil?
-    break
+def fragments(x)
+  if x <= 4
+    return x
   end
 
-  x_floor = max_x / 2
-  x_ceil = (max_x.to_f / 2).ceil
-
-  if x_floor > 4
-    x_stack.push(x_floor)
-  else
-    fragments[x_floor] += 1
+  if FRAGMENTS[x]
+    return FRAGMENTS[x]
   end
 
-  if x_ceil > 4
-    x_stack.push(x_ceil)
+  if x.even?
+    FRAGMENTS[x] = fragments(x / 2) ** 2 % VERY_LARGE_PRIME
   else
-    fragments[x_ceil] += 1
+    FRAGMENTS[x] = (fragments(x / 2) * fragments(x / 2 + 1)) % VERY_LARGE_PRIME
   end
 end
 
-p (2 ** fragments[2]  % VERY_LARGE_PRIME) * (3 ** fragments[3]  % VERY_LARGE_PRIME) * (4 ** fragments[4] % VERY_LARGE_PRIME) % VERY_LARGE_PRIME
+p fragments(x)
