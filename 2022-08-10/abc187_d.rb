@@ -8,7 +8,7 @@ n.times do
   aoki_voters += current_town_voters[0]
 end
 
-voters.sort! {|a, b| b[0] + b[1] <=> a[0] + a[1]}
+voters.sort_by! {|item| -(item[0] * 2 + item[1])}
 
 takahashi_voters = 0
 speech_town_count = 0
