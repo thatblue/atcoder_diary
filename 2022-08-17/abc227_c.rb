@@ -1,15 +1,16 @@
-include Math
+# https://atcoder.jp/contests/abc227/submissions/27238150
 
 n = gets.chomp.to_i
 
-cbrt = Math.cbrt(n).to_i
-
 count = 0
-(1..cbrt).each do |a|
-  max_b = Math.sqrt(n / a).to_i
-  (a..max_b).each do |b|
-    count += n / a / b - b + 1
+a = 1
+while a * a * a <= n do
+  b = a
+  while a * b * b <= n do
+    count += (n / (a * b) - b + 1)
+    b += 1
   end
+  a += 1
 end
 
 p count
