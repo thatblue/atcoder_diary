@@ -8,25 +8,19 @@ PATHS = Array.new(n + 1) {[]}
   PATHS[from] << to
   PATHS[to] << from
 end
-DEPTHS = Array.new(n + 1) {Array.new(n + 1)}
+TOWN_FLAGS = Array.new(n + 1)
 
-def visit_all(from)
+def visit_all
   visited = Set.new
-  tree = [Set.new([from])]
+  current_depth = Set.new([1])
   depth = 0
   loop do
     next_depth = Set.new
-    tree[depth].each do |town|
+    current_depth.each do |town|
       unless visited.include?(town)
-        DEPTHS[from][town] = depth
+        TOWN_FLAGS[town] = depth % 2
         next_depth.merge(PATHS[town])
         visited.add(town)
-
-        tree[1..depth - 1].each_with_index do |previous_depth, index|
-          previous_depth.each do |previous_town|
-            DEPTHS[previous_town][town] = depth - (index + 1)
-          end
-        end
       end
     end
 
@@ -34,18 +28,15 @@ def visit_all(from)
       break
     end
 
-    tree << next_depth
+    current_depth = next_depth
     depth += 1
   end
 end
 
+visit_all
+
 q.times do
   takahashi, aoki = gets.chomp.split.map(&:to_i)
 
-  if DEPTHS[takahashi][aoki].nil?
-    visit_all(takahashi)
-  end
-  depth = DEPTHS[takahashi][aoki]
-
-  puts depth.even? ? "Town" : "Road"
+  puts TOWN_FLAGS[takahashi] == TOWN_FLAGS[aoki] ? "Town" : "Road"
 end
