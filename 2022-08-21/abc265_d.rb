@@ -1,52 +1,25 @@
-n, p, q, r = gets.chomp.split.map(&:to_i)
-array = gets.chomp.split.map(&:to_i)
+# https://atcoder.jp/contests/abc265/submissions/34228162
+require "set"
 
-x = 0
-while x <= n - 3 do
-  x_summary = 0
-  y = x + 1
-  while y <= n - 2 do
-    x_summary += array[y - 1]
-    if x_summary > p
-      break
-    end
-    if x_summary < p
-      y += 1
-      next
-    end
+_, p, q, r = gets.chomp.split.map(&:to_i)
 
-    y_summary = 0
-    z = y + 1
-    while z <= n - 1 do
-      y_summary += array[z - 1]
-      if y_summary > q
-        break
-      end
-      if y_summary < q
-        z += 1
-        next
-      end
+total = 0
+cumu_sum = gets.chomp.split.map { |value| total += value.to_i}
+cumu_sum.unshift(0)
+cumu_sum_set = cumu_sum.to_set
 
-      z_summary = 0
-      w = z + 1
-      while w <= n do
-        z_summary += array[w - 1]
-        if z_summary > r
-          break
-        end
-        if z_summary < r
-          w += 1
-          next
-        end
+cumu_sum.each do |current_sum|
+  cumu_sum_to_first_segment = p + current_sum
+  next unless cumu_sum_set.include?(cumu_sum_to_first_segment)
 
-        puts "Yes"
-        exit
-      end
-      z += 1
-    end
-    y += 1
-  end
-  x += 1
+  cumu_sum_to_second_segment = q + cumu_sum_to_first_segment
+  next unless cumu_sum_set.include?(cumu_sum_to_second_segment)
+
+  cumu_sum_to_third_segment = r + cumu_sum_to_second_segment
+  next unless cumu_sum_set.include?(cumu_sum_to_third_segment)
+
+  puts "Yes"
+  exit
 end
 
 puts "No"
