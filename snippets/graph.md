@@ -36,3 +36,28 @@ outer_product = v2['x'] * v1['y'] - v2['y'] * v1['x']
 ```
 
 `outer_product`が0未満であれば∠ABCは反時計回り方向に見て180度未満であると言える。
+
+### ユークリッド距離
+
+いわゆる直線距離のこと。
+比較が必要な場合は安易にsqrtを取ると痛い目に逢う。
+
+```ruby
+include Math
+Math.sqrt((a_x - b_x) ** 2 + (a_y - b_y) ** 2)
+```
+
+### マンハッタン距離
+
+碁盤の目状に引かれた道に沿って移動するときの最短経路のこと。
+
+```ruby
+(a_x - b_x).abs + (a_y - b_y).abs
+```
+
+### チェビシェフ距離
+[こういう問題](https://atcoder.jp/contests/abc264/tasks/abc264_b)で中心点からの距離を求めたいときに使う。
+
+```ruby
+[(a_x - b_x).abs, (a_y - b_y).abs].max
+```
