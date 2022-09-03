@@ -29,6 +29,12 @@ n, m = gets.chomp.split.map(&:to_i)
 array = gets.chomp.split.map(&:to_i)
 ```
 
+#### 取得しながら累積和を計算したい場合
+```ruby
+total = 0
+cumu_sum = gets.chomp.split.map { |value| total += value.to_i }
+```
+
 #### 最初の要素を捨てたい場合
 
 ```ruby
