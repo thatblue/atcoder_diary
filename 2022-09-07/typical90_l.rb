@@ -2,26 +2,30 @@ require "set"
 
 class UnionFind
   def initialize(n)
-    @parent = Array.new(n + 1) { _1}
+    @root = Array.new(n + 1, &:itself)
     @size = Array.new(n + 1, 1)
   end
 
   def root(v)
-    @parent[v] == v ? v : @parent[v] = root(@parent[v])
+    @root[v] == v ? v : @root[v] = root(@root[v])
   end
 
   def merge(u, v)
-    u = root(u)
-    v = root(v)
+    u_root = root(u)
+    v_root = root(v)
 
-    return false if u == v
+    return if u_root == v_root
 
-    @size[u] += @size[v]
-    @parent[v] = u
+    @size[u_root] += @size[v_root]
+    @root[v_root] = u_root
   end
 
-  def size(u)
-    @size[u]
+  def size(v)
+    @size[root(v)]
+  end
+
+  def same_tree?(u, v)
+    root(u) == root(v)
   end
 end
 
@@ -55,6 +59,6 @@ q.times do
       next
     end
 
-    puts uf_tree.root(pos_to_value(a_row, a_col)) == uf_tree.root(pos_to_value(b_row, b_col)) ? "Yes" : "No"
+    puts uf_tree.same_tree?(pos_to_value(a_row, a_col), pos_to_value(b_row, b_col)) ? "Yes" : "No"
   end
 end
