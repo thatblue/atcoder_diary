@@ -12,7 +12,8 @@ end
 
 def bfs(start_node)
   current_depth_nodes = Set.new([start_node])
-  nodes = [current_depth_nodes]
+  return_nodes = Array.new(2) { Array.new }
+  return_nodes[1] << start_node
   visited = Set.new([start_node])
   depth = 0
   while visited.length < N
@@ -30,29 +31,19 @@ def bfs(start_node)
 
     visited.merge(next_depth_nodes)
     current_depth_nodes = next_depth_nodes
-    nodes << current_depth_nodes
+    return_nodes[depth % 2].concat(current_depth_nodes.to_a)
     depth += 1
   end
 
-  [depth, current_depth_nodes, nodes]
+  return_nodes
 end
 
-*, nodes = bfs(1)
+divided_nodes = bfs(1)
 
-independent_nodes = Set.new
-
-return_nodes = []
-nodes.each_with_index do |current_depth_nodes, index|
-  if index.odd?
-    next
-  end
-
-  independent_nodes = independent_nodes.merge(current_depth_nodes)
-
-  if independent_nodes.count >= N / 2
-    return_nodes = independent_nodes.to_a[0..(N / 2 - 1)]
-    break
-  end
+if divided_nodes[0].length >= divided_nodes[1].length
+  return_nodes = divided_nodes[0].to_a
+else
+  return_nodes = divided_nodes[1].to_a
 end
 
-puts return_nodes.join(" ")
+puts return_nodes[0..(N / 2 - 1)].join(" ")
