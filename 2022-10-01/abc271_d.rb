@@ -5,21 +5,7 @@ n.times do
   cards << gets.chomp.split.map(&:to_i)
 end
 
-if n == 1
-  if cards[0][0] == s
-    puts 'Yes'
-    puts 'H'
-  elsif cards[0][1] == s
-    puts 'Yes'
-    puts 'T'
-  else
-    puts 'No'
-  end
-
-  exit
-end
-
-dp = Array.new(n + 1) { Array.new(s + 1) { Array.new(2, false) } }
+dp = Array.new(n + 1) { Array.new(10001) { Array.new(2, false) } }
 dp[0][0][0] = true
 dp[0][0][1] = true
 
