@@ -1,26 +1,34 @@
+# cf. https://atcoder.jp/contests/typical90/submissions/23936258
+
 n, k = gets.chomp.split.map(&:to_i)
 
 array = gets.chomp.split.map(&:to_i)
-chars = Hash.new
 
+chars = Hash.new(0)
 max = 0
-array.each_with_index do |value, index|
-  chars.each_pair do |key, current_chars|
-    if current_chars.length == k && !current_chars.include?(value)
-      chars.delete(key)
-      next
+chars_kinds = 0
+l = 0
+r = 0
+
+while r < n
+  add_value = array[r]
+  if chars[add_value] == 0
+    chars_kinds += 1
+  end
+  chars[add_value] += 1
+
+  while chars_kinds > k
+    delete_value = array[l]
+    chars[delete_value] -= 1
+    if chars[delete_value] == 0
+      chars_kinds -= 1
     end
-
-    current_chars[value] += 1
-    max = [max, current_chars.sum { |k, v| v }].max
+    l += 1
   end
 
-  chars[index] = Hash.new
-  chars[index].default = 0
-  chars[index][value] = 1
-  if max == 0
-    max = 1
-  end
+  max = [max, r - l + 1].max
+
+  r += 1
 end
 
 p max
