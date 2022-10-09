@@ -1,3 +1,5 @@
+# ここまでで2h 15min経過
+
 require 'set'
 
 TOP = 0
