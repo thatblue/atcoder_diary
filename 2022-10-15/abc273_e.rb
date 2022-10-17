@@ -1,24 +1,28 @@
+# cf. https://atcoder.jp/contests/abc273/submissions/35695451
 note = Hash.new
-note.default = []
-array = []
+
+root = { parent: nil, number: nil }
+current = root
 
 q = gets.chomp.to_i
-ans = Array.new(q)
-q.times do |i|
+ans = []
+q.times do
   operation, value = gets.chomp.split
 
   if operation == "ADD"
-    array << value
+    child = { parent: current, value: value }
+    ans << value
+    current = child
   elsif operation == "DELETE"
-    array.pop
+    current = current[:parent] if current[:parent]
+    ans << (current[:value] || -1)
   elsif operation == "SAVE"
-    note[value] = array.dup
-  else
-    # operation == "LOAD"
-    array = note[value].dup
+    note[value] = current
+    ans << (current[:value] || -1)
+  else # operation == "LOAD"
+    current = note[value] || root
+    ans << (current[:value] || -1)
   end
-
-  ans[i] = (array.empty? ? -1 : array[-1])
 end
 
 puts ans.join(" ")
