@@ -36,3 +36,19 @@ GCD = Greatest Common Divisor
 ```ruby
 gcd = a.gcd(b)
 ```
+
+## 配列の中央値を計算
+
+```ruby
+def median(array)
+  length = array.count
+  center = length / 2
+  if length.odd?
+    # 配列の要素が奇数個の場合はそのまま真ん中の値が中央値
+    array[center]
+  else
+    # 配列の要素が偶数個の場合は真ん中2つの平均が中央値
+    (array[center] + array[center - 1]) / 2
+  end
+end
+```
