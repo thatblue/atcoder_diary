@@ -1,55 +1,59 @@
-require 'set'
+# 解説の写経
 
 n, m = gets.chomp.split.map(&:to_i)
 
-PATHS = Array.new(n + 1) { Array.new }
+$paths = Array.new(n + 1) { Array.new }
 m.times do
   from, to = gets.chomp.split.map(&:to_i)
-  PATHS[from] << to
-  PATHS[to] << from
+  $paths[from] << to
+  $paths[to] << from
 end
 
-odd_nodes = []
-even_nodes = []
-current_depth_nodes = Set.new([1])
-visited = Set.new([1])
-depth = 0
+$color = Array.new(n + 1)
 
-if PATHS[1].length == 1
-  even_nodes << 1
-end
+def dfs(current_node, prev_node, current_color)
+  result = [0, 0]
 
-while visited.length < n
-  next_depth_nodes = Set.new
-  current_depth_nodes.each do |node|
-    candidates = PATHS[node]
-    has_next_node = false
-    candidates.each do |candidate|
-      if visited.include?(candidate)
-        next
-      end
+  $color[current_node] = current_color
+  result[0] += 1 if current_color == 1
+  result[1] += 1 unless current_color == 1
 
-      next_depth_nodes.add(candidate)
-      has_next_node = true
-    end
+  $paths[current_node].each do |next_node|
+    # 既に訪問済みのノードで、別の色で塗ってあれば検証不要なのでスキップ
+    next if next_node == prev_node || $color[next_node] == -current_color
 
-    unless has_next_node
-      if depth % 2 == 0
-        even_nodes << node
-      else
-        odd_nodes << node
-      end
-    end
+    # 隣り合うはずのノードなのに同じ色で塗られている場合は2部グラフではない
+    return [-1, -1] if $color[next_node] == current_color
+
+    next_result = dfs(next_node, current_node, -current_color)
+    # 次のノード(以降)で2部グラフではないことが検出された
+    return [-1, -1] if next_result[0] == -1
+
+    result[0] += next_result[0]
+    result[1] += next_result[1]
   end
-  visited.merge(next_depth_nodes)
-  current_depth_nodes = next_depth_nodes
-  depth += 1
+
+  result
 end
 
-if depth % 2 == 0
-  even_nodes.concat(current_depth_nodes.to_a)
-else
-  odd_nodes.concat(current_depth_nodes.to_a)
+# ありうる頂点の全組み合わせから実在するMを減らしておく
+answer = n * (n - 1) / 2 - m
+1.upto(n) do |i|
+  if $color[i].nil?
+    # 未走査であればこの点を起点としてグラフを走査する
+    result = dfs(i, -1, 1)
+    if result[0] == -1
+      # 1つでも2部グラフではない連結成分があれば条件が成立しないので終了
+      puts 0
+      exit
+    end
+
+    # 同じ連結成分内の同じ色どうしの組み合わせを減らす
+    # 別の連結成分に繋ぐ分にはどう繋いでも2部グラフになる(らしい)
+    answer -= result[0] * (result[0] - 1) / 2
+    answer -= result[1] * (result[1] - 1) / 2
+  end
 end
 
-puts odd_nodes.length * even_nodes.length
+# 最後まで残った組み合わせが答えになる
+puts answer
