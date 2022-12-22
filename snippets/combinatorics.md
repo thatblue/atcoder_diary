@@ -34,3 +34,13 @@ def combination(n, r)
   ((n - r + 1)..n).inject(:*) / (2..r).inject(:*)
 end
 ```
+
+## 三角数
+
+計算としては `nCr` の `r = 2` 固定版。
+
+```ruby
+def triangular(n)
+  n * (n + 1) / 2
+end
+```
