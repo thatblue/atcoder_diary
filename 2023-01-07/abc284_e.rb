@@ -1,3 +1,4 @@
+# 解説の写経
 n, m = gets.chomp.split.map(&:to_i)
 
 MAX = 10 ** 6
@@ -10,23 +11,23 @@ m.times do
   $paths[to] << from
 end
 
-$routes = Array.new(n + 1, 0)
-$routes[1] = 1
-$sum = 1
+$routes = 0
+$visited = {}
 
-def visit(current_node, visited)
+def visit(current_node)
+  return if $routes >= MAX
+
+  $visited[current_node] = true
+  $routes += 1
+
   $paths[current_node].each do |next_node|
-    next if visited.include? next_node
-    $routes[next_node] += 1
-    $sum += 1
-    if $sum >= MAX
-      puts MAX
-      exit
-    end
-    visit(next_node, visited + [next_node])
+    next if $visited[next_node]
+    visit(next_node)
   end
+
+  $visited[current_node] = false
+
+  $routes
 end
 
-visit(1, [1])
-
-puts [$sum, MAX].min
+puts visit(1)
