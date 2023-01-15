@@ -18,12 +18,17 @@ dp = Array.new(n + 1) { Hash.new(0) }
         next
       end
 
-      prev_holiday = holiday_days[next_holiday_index]
+      prev_holiday = holiday_days[next_holiday_index - 1]
       next_holiday = holiday_days[next_holiday_index]
 
       day = day_index + 1
 
-      dp[i][j] += [array[(prev_holiday - day).abs], array[(next_holiday - day).abs]].min
+      prev_diff = (day - prev_holiday).abs
+      prev_diff = n - prev_diff if prev_holiday > day
+      next_diff = (next_holiday - day).abs
+      next_diff = n - next_diff if next_holiday < day
+
+      dp[i][j] += array[[prev_diff, next_diff].min]
     end
     max_prod = [max_prod, dp[i][j]].max
   end
