@@ -1,31 +1,16 @@
+# cf. https://atcoder.jp/contests/abc292/submissions/39420187
 n = gets.chomp.to_i
 
-$pairs_counts = Array.new(n)
-
-def pairs_count(val)
-  return $pairs_counts[val] unless $pairs_counts[val].nil?
-
-  $pairs_counts[val] = 0
-
-  sqrt_val = Math.sqrt(val).floor
-  1.upto(sqrt_val) do |i|
-    div, mod = val.divmod(i)
-    next if mod > 0
-
-    $pairs_counts[val] += i == div ? 1 : 2
+# 約数を求めるのではなく、x * y <= n を満たすxとyの組み合わせを全部数え上げていく方が早い
+# 処理回数が調和級数なので、計算量はN * log(N)で求められる
+cache = Array.new(n + 1, 0)
+1.upto(n) do |x|
+  y_max = n / x
+  1.upto(y_max) do |y|
+    cache[x * y] += 1
   end
-
-  $pairs_counts[val]
 end
 
-ans = 0
-loop_max = n.even? ? n / 2 - 1 : n / 2
-1.upto(loop_max) do |x|
-  ans += pairs_count(x) * pairs_count(n - x) * 2
-end
-
-if n.even?
-  ans += pairs_count(n / 2) * pairs_count(n / 2)
-end
+ans = 1.upto(n).sum { |x| cache[x] * cache[n - x] }
 
 puts ans
