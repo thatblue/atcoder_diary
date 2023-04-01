@@ -1,24 +1,16 @@
-n, x = gets.chomp.split.map(&:to_i)
-array = gets.chomp.split.map(&:to_i).sort
+# frozen_string_literal: true
 
-n.times do |i|
-  i.upto(n-1) do |j|
-    if
-  end
+_n, x = gets.chomp.split.map(&:to_i)
+values = {}
+gets.chomp.split.map(&:to_i).each do |value|
+  values[value] = true
 end
 
-left = 0
-
-while left < n
-   right = left
-   while right < n
-    if (array[left] - array[right]) == x || (array[right] - array[left]) == x
-      puts 'Yes'
-      exit
-    end
-    right += 1
-   end
-   left += 1
+values.each_key do |value|
+  if values.key?(value - x) || values.key?(value + x)
+    puts 'Yes'
+    exit
+  end
 end
 
 puts 'No'
