@@ -37,3 +37,44 @@ p ["a", "b", "c", "b"].tally
 [1, 2, 3, 4, 5].bsearch { |x| x > 3 }
 # 条件を満たす最初の値である4が戻り値となる
 ```
+
+## 二次元配列の回転・反転
+
+### 実際に回転させた配列を作る
+B問題くらいまでなら回転させてしまった配列を個別に持っておくのがよさそう。
+
+```ruby
+# 時計周りに90度回転
+puts [[1, 2, 3], [4, 5, 6], [7, 8, 9]].transpose.map(&:reverse)
+
+# 180度回転
+puts [[1, 2, 3], [4, 5, 6], [7, 8, 9]].reverse.map(&:reverse)
+
+# 時計回りに270度(=反時計周りに90度)回転
+puts [[1, 2, 3], [4, 5, 6], [7, 8, 9]].transpose.reverse
+
+# 上下反転
+puts [[1, 2, 3], [4, 5, 6], [7, 8, 9]].reverse
+
+# 左右反転
+puts [[1, 2, 3], [4, 5, 6], [7, 8, 9]].map(&:reverse)
+```
+
+### 回転させた座標を都度求める
+
+```ruby
+# 時計周りに90度回転
+puts matrix[matrix.length - 1 - j][i]
+
+# 180度回転
+puts matrix[matrix.length - 1 - i][matrix.length - 1 - j]
+
+# 時計回りに270度(=反時計周りに90度)回転
+puts matrix[j][matrix.length - 1 - i]
+
+# 上下反転
+puts matrix[matrix.length - 1 - i][j]
+
+# 左右反転(たぶん)
+puts matrix[i][matrix.length - 1 - j]
+```
