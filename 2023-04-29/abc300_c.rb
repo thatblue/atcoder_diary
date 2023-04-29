@@ -11,22 +11,16 @@ end
 checked = Array.new(h) { Array.new(w, false) }
 h.times do |i|
   w.times do |j|
-    next if checked[i][j]
-
-    if grid[i][j] == '#'
-      width = 3
-      width += 2 while grid[i][j + width - 1] == '.' && !grid[i][j + width - 1].nil?
-      crosses[(width - 1) / 2] += 1
-
-      width.times do |k|
-        if i + k < h
-          checked[i + k][j + k] = true if j + k < w
-          checked[i + k][j + width - 1 - k] = true if j + width - 1 - k
-        end
-      end
-    end
+    next if grid[i][j] == '.' || checked[i][j]
 
     checked[i][j] = true
+    length = 0
+    while (i + length + 1) < h && (j + length + 1) < w &&  grid[i + length + 1][j + length + 1] == '#'
+      length += 1
+      checked[i + length][j + length] = true
+    end
+
+    crosses[length / 2] += 1 if length.positive?
   end
 end
 
