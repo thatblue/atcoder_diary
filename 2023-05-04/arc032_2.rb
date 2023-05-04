@@ -1,6 +1,6 @@
 class UnionFind
   def initialize(n)
-    @roots = [0..n]
+    @roots = [*0..n]
     @sizes = Array.new(n + 1, 1)
     @group_count = n
   end
