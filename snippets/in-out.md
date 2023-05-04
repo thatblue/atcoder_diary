@@ -9,7 +9,7 @@ n = gets.chomp.to_i
 
 ### 文字列として値を1つ受け取る
 ```ruby
-n = gets.chomp
+s = gets.chomp
 ```
 
 ### 文字列として値を受け取り、1文字ずつに分解する
