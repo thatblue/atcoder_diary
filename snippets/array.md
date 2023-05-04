@@ -9,7 +9,15 @@ array = Array.new(n) { Array.new(n, 0) }
 
 ## 長さnの配列をインデックスの値で初期化する
 ```ruby
-array = Array.new(n + 1) { _1}
+# 0-index (速い順)
+array = (0..n).to_a
+array = [*0..n]
+array = Array.new(n) { _1 }
+
+# 1-index (速い順)
+array = (1..n).to_a
+array = [*1..n]
+array = Array.new(n) { _1 + 1 }
 ```
 
 ## 配列のインデックスと値をループ中に両方とも使いたい
