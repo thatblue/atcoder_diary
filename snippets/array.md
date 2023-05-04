@@ -78,3 +78,19 @@ puts matrix[matrix.length - 1 - i][j]
 # 左右反転(たぶん)
 puts matrix[i][matrix.length - 1 - j]
 ```
+
+## H * Wの二次元配列に(0,0)から順にIDを振る(1-index)
+
+```ruby
+H = 4
+W = 5
+matrix = Array.new(H) { Array.new(W)}
+
+H.times do |i|
+  W.times do |j|
+    matrix[i][j] = W * i + j + 1
+  end
+end
+
+pp matrix
+```
