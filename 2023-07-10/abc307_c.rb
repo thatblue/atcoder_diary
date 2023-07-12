@@ -12,7 +12,13 @@ end
 
 HA, WA, sheet_a = read_sheet
 HB, WB, sheet_b = read_sheet
-HX, WX, sheet_x = read_sheet
+HX, WX, tmp = read_sheet
+
+sheet_x = Array.new(10) { Array.new(30, false) }
+HX.times do |i|
+  sheet_x << Array.new(10, false) + tmp[i] + Array.new(20 - WX, false)
+end
+sheet_x += Array.new(20 - HX) { Array.new(30, false) }
 
 START_HX = 10
 START_WX = 10
@@ -21,10 +27,10 @@ def inside_x?(i, j)
   i.between?(START_HX, START_HX + HX - 1) && j.between?(START_WX, START_WX + WX - 1)
 end
 
-20.times do |ai|
-  20.times do |aj|
-    20.times do |bi|
-      20.times do |bj|
+(START_HX - HA + 1).upto(19) do |ai|
+  (START_WX - WA + 1).upto(19) do |aj|
+    (START_HX - HB + 1).upto(19) do |bi|
+      (START_WX - WB + 1).upto(19) do |bj|
         combined = Array.new(30) { Array.new(30, false) }
 
         HA.times do |i|
@@ -39,18 +45,7 @@ end
           end
         end
 
-        result = true
-        30.times do |i|
-          30.times do |j|
-            if inside_x?(i, j)
-              result &= combined[i][j] == sheet_x[i - START_HX][j - START_WX]
-            else
-              result &= !combined[i][j]
-            end
-          end
-        end
-
-        if result
+        if combined == sheet_x
           puts 'Yes'
           exit
         end
