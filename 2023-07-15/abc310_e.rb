@@ -1,23 +1,27 @@
-n = gets.chomp.to_i
-s = gets.chomp
+# https://atcoder.jp/contests/abc310/editorial/6784 解説の写経
 
-s_array = s.chars.map(&:to_i)
+gets.chomp.to_i
+s = gets.chomp.chars.map(&:to_i)
 
-def nand(a, b)
-  a + b == 2 ? 0 : 1
-end
-
-current_array = s_array
+prev_zero = 0
+prev_one = 0
 ans = 0
-
-n.times do
-  value = current_array.shift
-  ans += value
-
-  current_array.each do |bit|
-    value = nand(value, bit)
-    ans += value
+s.each do |char|
+  # f(*, i)をDPで解いていくイメージ
+  if char.zero?
+    # 現在の値が0: 手前の値に関わらず1になり、自分が先頭の場合のみ0となる
+    current_zero = 1
+    current_one = prev_zero + prev_one
+  else
+    # 現在の値が1: 手前の値が0なら1、1なら0になり、自分が先頭の場合は1となる
+    current_zero = prev_one
+    current_one = prev_zero + 1
   end
+
+  ans += current_one
+
+  prev_zero = current_zero
+  prev_one = current_one
 end
 
 puts ans
