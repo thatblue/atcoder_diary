@@ -24,6 +24,14 @@ end
 end
 ```
 
+## 無限ループ
+
+```ruby
+loop do
+  puts 'Hi!'
+end
+```
+
 ## ランレングス圧縮
 
 `aabbbcccc`を`a2b3c4`に変換するアレ。
