@@ -1,55 +1,54 @@
+NOT_REACHABLE = 0
 THROUGH = 1
 STOP = 2
-$directions = { up: [-1, 0], down:[1, 0], left: [0, -1], right: [0, 1] }
-
-UP = 1
-DOWN = 2
-LEFT = 3
-RIGHT = 4
+directions = { up: { i: -1, j: 0 }, down: { i: 1, j: 0 }, left: { i: 0, j: -1 }, right: { i: 0, j: 1 } }
 
 $n, $m = gets.chomp.split.map(&:to_i)
 
 $map = []
 $n.times do
-  $map << gets.chomp.chars.map { |v| v == '#' ? 0 : 1 }
+  $map << gets.chomp.chars.map { |v| v == '#' ? false : true }
 end
 
 def movable?(i, j)
-  return i.between?(2, $n - 1) && j.between?(2, $m - 1) && $map[i][j]
+  return i.between?(1, $n - 2) && j.between?(1, $m - 2) && $map[i][j]
 end
 
-$movable = Array.new($n + 1) { Array.new($m + 1, 0) }
-$movable[2][2] = STOP
+visited_nodes = { [1, 1] => true }
+current_nodes = { [1, 1] => true }
+stopped_nodes = { [1, 1] => true }
 
-def dfs(i, j)
-  pp [i, j]
-  $directions.each do |_, move|
-    pp [i, j, _]
-    next_i = i + move[0]
-    next_j = j + move[1]
+until current_nodes.empty?
+  next_nodes = {}
+  current_nodes.each do |node, _|
+    i, j = node
 
-    while movable?(next_i, next_j)
-      $movable[next_i][next_j] = THROUGH if $movable[next_i][next_j] == 0
+    directions.each do |_, move|
+      next_i = i + move[:i]
+      next_j = j + move[:j]
 
-      next_i += move[0]
-      next_j += move[1]
+      # 全く動けないならこの時点で終了
+      next unless movable?(next_i, next_j)
+
+      while movable?(next_i, next_j)
+        visited_nodes[[next_i, next_j]] = true
+        next_i += move[:i]
+        next_j += move[:j]
+      end
+
+      last_i = next_i - move[:i]
+      last_j = next_j - move[:j]
+
+      # 既に止まったことのあるノードであればここで終了
+      next if stopped_nodes[[last_i, last_j]]
+
+      # 初めて止まったノードなら次の探索対象とする
+      stopped_nodes[[last_i, last_j]] = true
+      next_nodes[[last_i, last_j]] = true
     end
-
-    last_i = next_i - move[0]
-    last_j = next_j - move[1]
-
-    $movable[last_i][last_j] = STOP if $movable[last_i][last_j] == THROUGH
-
-    dfs(last_i, last_j) if last_i != i && last_i != j && $movable[last_i][last_j] > 0
   end
+
+  current_nodes = next_nodes
 end
 
-dfs(2, 2)
-
-ans = 0
-2.upto($n - 1) do |i|
-  # puts $movable[i].join
-  ans += $movable[i].count { |v| v > 0 }
-end
-
-puts ans
+puts visited_nodes.length
