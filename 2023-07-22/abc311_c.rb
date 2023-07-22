@@ -1,36 +1,22 @@
 n = gets.chomp.to_i
 
-$paths = Array.new(n + 1) { [] }
-gets.chomp.split.map(&:to_i).each_with_index do |b, index|
-  $paths[index + 1] << b
-end
+next_nodes = gets.chomp.split.map(&:to_i)
+next_nodes.unshift(0)
 
-$visited = {}
-def dfs(current, path)
-  if $visited[current]
-    return { result: false, path: nil } if path.empty?
-
-    if path[0] == current
-      return { result: true, path: path }
-    else
-      start_index = path.bsearch_index { |v| v == current }
-      return { result: true, path: path[start_index..] }
-    end
+path = []
+visited = {}
+current = 1
+index = 0
+loop do
+  unless visited[current].nil?
+    loop_path = path[visited[current]..]
+    puts loop_path.count
+    puts loop_path.join ' '
+    exit
   end
 
-  return { result: false, path: nil } if $paths[current].empty?
-
-  next_path = path + [current]
-  $visited[current] = true
-  $paths[current].each do |next_node|
-    child_result = dfs(next_node, next_path)
-    return child_result if child_result[:result]
-  end
-  $visited.delete(current)
-
-  { result: false, path: nil }
+  path << current
+  visited[current] = index
+  current = next_nodes[current]
+  index += 1
 end
-
-result = dfs(1, [])
-puts result[:path].length
-puts result[:path].join ' '
