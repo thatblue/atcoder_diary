@@ -3,17 +3,13 @@ n, m = gets.chomp.split.map(&:to_i)
 sellers = gets.chomp.split.map(&:to_i).sort
 buyers = gets.chomp.split.map(&:to_i).sort.reverse
 
-merged = sellers + buyers + [sellers[0] - 1, buyers[0] + 1]
-merged.uniq!.sort!
+candidate_prices = sellers + buyers.map { |b| b + 1 }
+candidate_prices.uniq!
+candidate_prices.sort!
 
-merged.each do |price|
-  sellers_count = sellers.bsearch_index { |s| s > price }
-  sellers_count ||= n
-  buyers_count = buyers.bsearch_index { |b| b < price }
-  buyers_count ||= m
+puts candidate_prices.bsearch { |price|
+  sellers_count = sellers.bsearch_index { |s| s > price } || n
+  buyers_count = buyers.bsearch_index { |b| b < price } || m
 
-  if sellers_count >= buyers_count
-    puts price
-    exit
-  end
-end
+  sellers_count >= buyers_count
+}
