@@ -5,3 +5,9 @@
   puts "#{key} #{value}"
 end
 ```
+
+## 1からNまでをキーにして全部にtrueを突っ込んだHashを作る
+
+```ruby
+hash = (1..n).to_a.map { |i| [i, true] }.to_h
+```
