@@ -11,3 +11,9 @@ end
 ```ruby
 hash = (1..n).to_a.map { |i| [i, true] }.to_h
 ```
+
+## デフォルト値をArrayにする
+
+```ruby
+hash = Hash.new {|hash, key| hash[key] = []}
+```
