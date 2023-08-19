@@ -1,38 +1,55 @@
 h, w = gets.chomp.split.map(&:to_i)
 
 cookies = []
-h.times do
-  cookies << gets.chomp.chars
+i_colors = Hash.new {|hash, key| hash[key] = Hash.new(0) }
+j_colors = Hash.new {|hash, key| hash[key] = Hash.new(0) }
+h.times do |i|
+  row = gets.chomp.chars
+  cookies << row
+  row.each_with_index do |color, j|
+    i_colors[i][color] += 1
+    j_colors[j][color] += 1
+  end
 end
 
-cookies_count = h * w
 current_h = h
 current_w = w
-if h < w
-  cookies = cookies.transpose if h < w
-  current_h = w
-  current_w = h
-end
+marked_rows = {}
+marked_cols = {}
 
-loop do
-  next_cookies = []
-  next_h = 0
-  next_w = 0
-  cookies.each do |row|
-    next_w = row.length
-    squeezed = row.join.squeeze.length
-    next if next_w > 1 && squeezed == 1
+(h + w).times do
+  checked_rows = {}
+  checked_cols = {}
 
-    next_cookies << row
-    next_h += 1
+  h.times do |i|
+    next if marked_rows[i]
+    ('a'..'z').each do |char|
+      if i_colors[i][char] == current_w && current_w >= 2
+        checked_rows[[i, char]] = true
+      end
+    end
   end
 
-  current_cookies_count = next_h * next_w
-  if cookies_count == current_cookies_count
-    puts current_cookies_count
-    exit
+  w.times do |j|
+    next if marked_cols[j]
+    ('a'..'z').each do |char|
+      if j_colors[j][char] == current_h && current_h >= 2
+        checked_cols[[j, char]] = true
+      end
+    end
   end
 
-  cookies_count = current_cookies_count
-  cookies = next_cookies.transpose
+  checked_rows.keys.each do |i, char|
+    marked_rows[i] = true
+    w.times { |j| j_colors[j][char] -= 1 }
+    current_h -= 1
+  end
+
+  checked_cols.keys.each do |j, char|
+    marked_cols[j] = true
+    h.times { |i| i_colors[i][char] -= 1 }
+    current_w -= 1
+  end
 end
+
+puts current_h * current_w
