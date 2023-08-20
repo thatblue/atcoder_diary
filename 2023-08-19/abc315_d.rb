@@ -1,10 +1,11 @@
+# cf. https://atcoder.jp/contests/abc315/submissions/44745288
 h, w = gets.chomp.split.map(&:to_i)
 
 cookies = []
-i_colors = Hash.new {|hash, key| hash[key] = Hash.new(0) }
-j_colors = Hash.new {|hash, key| hash[key] = Hash.new(0) }
+i_colors = Array.new(h) { Hash.new(0) }
+j_colors = Array.new(w) { Hash.new(0) }
 h.times do |i|
-  row = gets.chomp.chars
+  row = gets.chomp.chars.map {|c| c.ord - 97}
   cookies << row
   row.each_with_index do |color, j|
     i_colors[i][color] += 1
@@ -17,39 +18,50 @@ current_w = w
 marked_rows = {}
 marked_cols = {}
 
-(h + w).times do
-  checked_rows = {}
-  checked_cols = {}
+rows = [*0...h]
+cols = [*0...w]
+updated = true
 
-  h.times do |i|
-    next if marked_rows[i]
-    ('a'..'z').each do |char|
-      if i_colors[i][char] == current_w && current_w >= 2
-        checked_rows[[i, char]] = true
-      end
+while updated && rows.size > 1 && cols.size > 1
+  # 行と列をそれぞれチェックして、印を付けられる箇所を除外していく
+  excluded_row_chars = []
+  rows, _ = rows.partition do |i|
+    color = i_colors[i]
+    next true if color.size > 1
+
+    excluded_row_chars << color.keys.first
+    false
+  end
+
+  excluded_col_chars = []
+  cols, _ = cols.partition do |j|
+    color = j_colors[j]
+    next true if color.size > 1
+
+    excluded_col_chars << color.keys.first
+    false
+  end
+
+  # 相手方から除外した文字を消し込む
+  excluded_row_chars.each do |char|
+    cols.keep_if do |j|
+      color = j_colors[j]
+      color[char] -= 1
+      color.delete(char) if color[char] == 0
+      color.size > 0
     end
   end
 
-  w.times do |j|
-    next if marked_cols[j]
-    ('a'..'z').each do |char|
-      if j_colors[j][char] == current_h && current_h >= 2
-        checked_cols[[j, char]] = true
-      end
+  excluded_col_chars.each do |char|
+    rows.keep_if do |i|
+      color = i_colors[i]
+      color[char] -= 1
+      color.delete(char) if color[char] == 0
+      color.size > 0
     end
   end
 
-  checked_rows.keys.each do |i, char|
-    marked_rows[i] = true
-    w.times { |j| j_colors[j][char] -= 1 }
-    current_h -= 1
-  end
-
-  checked_cols.keys.each do |j, char|
-    marked_cols[j] = true
-    h.times { |i| i_colors[i][char] -= 1 }
-    current_w -= 1
-  end
+  updated = excluded_row_chars.size > 0 || excluded_col_chars.size > 0
 end
 
-puts current_h * current_w
+puts rows.size * cols.size
