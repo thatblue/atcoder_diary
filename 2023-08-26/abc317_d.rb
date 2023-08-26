@@ -29,6 +29,7 @@ dp[0] = 0
 
 areas.each do |area|
   settoku_count = [0, area[:voter_sum] / 2 + 1 - area[:takahashi]].max
+  # 最小値が欲しいので、最大から最小に向かって流していく(ぽい)
   seats_max.downto(area[:seats]) do |j|
     dp[j] = [dp[j], dp[j - area[:seats]] + settoku_count].min
   end
