@@ -1,36 +1,37 @@
+# cf. https://atcoder.jp/contests/abc317/editorial/7043 解説の写経
 n = gets.chomp.to_i
 
-settoku_areas = []
-chair_sum = 0
-takahashi_chair_sum = 0
+seats_max = 0
+takahashi_seats = 0
+areas = []
 n.times do
-  takahashi, aoki, chair = gets.chomp.split.map(&:to_i)
-  chair_sum += chair
-  if takahashi > aoki
-    takahashi_chair_sum += chair
-  else
-    settoku_areas << {
-      :chair => chair,
-      :settoku => (((takahashi + aoki) / 2) - takahashi).abs + 1
-    }
-  end
+  takahashi, aoki, seats = gets.chomp.split.map(&:to_i)
+  seats_max += seats
+  takahashi_seats += seats if takahashi > aoki
+
+  areas << {
+    :voter_sum => takahashi + aoki,
+    :takahashi => takahashi,
+    :aoki => aoki,
+    :seats => seats,
+  }
 end
 
-if chair_sum / 2 < takahashi_chair_sum
+majority_min = seats_max / 2 + 1
+
+if majority_min <= takahashi_seats
   puts 0
   exit
 end
 
-settoku_area_count = settoku_areas.count
+dp = Array.new(seats_max + 1, Float::INFINITY)
+dp[0] = 0
 
-settoku_count = nil
-1.upto(settoku_area_count) do |i|
-  (0...settoku_area_count).to_a.combination(i).each |areas|
-    current_chair_sum = 0
-    current_settoku_count = 0
-    areas.each do |area|
-      
-    end
+areas.each do |area|
+  settoku_count = [0, area[:voter_sum] / 2 + 1 - area[:takahashi]].max
+  seats_max.downto(area[:seats]) do |j|
+    dp[j] = [dp[j], dp[j - area[:seats]] + settoku_count].min
   end
 end
 
+puts dp[majority_min..].min
