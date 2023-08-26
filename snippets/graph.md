@@ -61,3 +61,11 @@ Math.sqrt((a_x - b_x) ** 2 + (a_y - b_y) ** 2)
 ```ruby
 [(a_x - b_x).abs, (a_y - b_y).abs].max
 ```
+
+## 二次元配列のマップ探索
+
+こういう定数を使って回していくと楽。
+
+```ruby
+DIRECTIONS = { up: { i: -1, j: 0 }, down: { i: 1, j: 0 }, left: { i: 0, j: -1 }, right: { i: 0, j: 1 } }
+```
