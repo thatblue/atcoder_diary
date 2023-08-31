@@ -1,5 +1,11 @@
 # 配列操作
 
+## index付きでmapする
+
+```ruby
+array.map.with_index { |v, i| v * i }
+```
+
 ## 0埋めしたN*Nの二次元配列を作る
 ```ruby
 array = Array.new(n) { Array.new(n, 0) }
