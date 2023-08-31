@@ -19,7 +19,7 @@ h.times do |i|
 
       end_of_cookies = [i, j] if j == w - 1
     else
-      end_of_cookies = [i, j - 1] unless start_of_cookies.nil?
+      end_of_cookies = [i, j - 1] if !start_of_cookies.nil? && end_of_cookies.nil?
     end
   end
 
