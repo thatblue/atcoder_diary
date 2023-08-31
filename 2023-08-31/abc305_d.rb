@@ -1,39 +1,30 @@
 n = gets.chomp.to_i
 
 cumu_sleep = 0
-prev_sleep_timestamp = 0
-logs = {}
+prev_timestamp = 0
+cumu_logs = []
 gets.chomp.split.map.with_index do |v, i|
   wake_up = i.even?
   timestamp = v.to_i
+  prev_activity_time = timestamp - prev_timestamp
 
   if wake_up
-    cumu_sleep += timestamp - prev_sleep_timestamp
+    if i == 0
+      cumu_logs << 0
+    else
+      cumu_logs += (cumu_sleep..(cumu_sleep+prev_activity_time)).to_a
+      cumu_sleep += timestamp - prev_timestamp
+    end
   else
-    prev_sleep_timestamp = timestamp
+    cumu_logs += Array.new(prev_activity_time - 1, cumu_sleep)
   end
-  logs[timestamp] = { cumu_sleep: cumu_sleep, wake_up: wake_up, prev_sleep_timestamp: prev_sleep_timestamp }
+  prev_timestamp = timestamp
 end
 
 q = gets.chomp.to_i
-
-milestones = logs.keys
 q.times do
   l, r = gets.chomp.split.map(&:to_i)
-
-  l_index = milestones.bsearch_index { |x| x > l }
-  l_index ||= -1
-  r_index = milestones.bsearch_index { |x| x >= r }
-  r_index ||= -1
-
-  l_timestamp = milestones[l_index]
-  r_timestamp = milestones[r_index]
-
-  l_cumu_sleep = logs[l_timestamp][:cumu_sleep]
-  l_cumu_sleep -= l - logs[l_timestamp][:prev_sleep_timestamp] if logs[l_timestamp][:wake_up]
-
-  r_cumu_sleep = logs[r_timestamp][:cumu_sleep]
-  r_cumu_sleep -= r_timestamp - r if logs[r_timestamp][:wake_up]
-
-  puts r_cumu_sleep - l_cumu_sleep
+  cumu_l = l == 0 ? 0 : cumu_logs[l]
+  cumu_r = r == 0 ? 0 : cumu_logs[r]
+  puts cumu_r - cumu_l
 end
