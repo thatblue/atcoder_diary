@@ -1,43 +1,33 @@
-N, m = gets.chomp.split.map(&:to_i)
-WORDS = gets.chomp.split.map(&:to_i)
+# 解説の写経
+# cf. https://atcoder.jp/contests/abc319/editorial/7115
+n, m = gets.chomp.split.map(&:to_i)
+words = gets.chomp.split.map { |l|
+  # 空白の処理のため、空白分の1文字を足しておく(先頭に付けるイメージ)
+  l.to_i + 1
+}
 
-minimum_sentence_length = WORDS.sum + (N - 1)
+min = words.max - 1 # 最長の単語が最小値
+max = words.sum # 全部並べたときの長さが最大値
 
-def dividable?(min_length, count)
-  parts = []
-  length = 0
-  max_length = min_length
-  WORDS.each_with_index do |word, i|
-    length += word
-    length += 1 if i < N - 1
-    if length >= min_length
-      length -= 1 if i < N - 1
-      parts << length
-      max_length = [max_length, length].max
-      length = 0
+while min + 1 < max
+  middle = (min + max) / 2
+
+  rows = 1
+  row_length = 0
+  n.times do |i|
+    row_length += words[i]
+    if row_length > middle
+      rows += 1
+      row_length = words[i]
     end
   end
 
-  [parts.size >= count, parts.count, max_length]
-end
-
-
-min_length = 1
-max_length = minimum_sentence_length
-prev_ans = nil
-ans = nil
-pittari_ans = minimum_sentence_length
-while min_length < max_length do
-  center = (min_length + max_length + 1) / 2
-  prev_ans = ans
-
-  result, row_count, ans = dividable?(center, m)
-  pittari_ans = [ans, pittari_ans].min if row_count == m
-  if result
-    min_length = center
+  if rows > m
+    min = middle
   else
-    max_length = center - 1
+    max = middle
   end
 end
 
-puts row_count == m ? ans : pittari_ans
+# 先頭に付けた1文字を削った値が答えになる
+puts max - 1
