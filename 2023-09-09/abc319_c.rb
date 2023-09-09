@@ -1,54 +1,53 @@
+# 概ね解説の写経
+# cf. https://atcoder.jp/contests/abc319/editorial/7114
 
-grid = []
-$false_hope_pairs = {}
-def check_false_hope(values)
-  hash = {}
-  values.each do |pos, value|
-    hash[value] ||= []
-    hash[value] << pos
-  end
+line_indexes = [
+  # 横方向
+  [0, 1, 2], [3, 4, 5], [6, 7, 8],
+  # 縦方向
+  [0, 3, 6], [1, 4, 7], [2, 5, 8],
+  # 斜め
+  [0, 4, 8], [2, 4, 6]
+]
+cell_indexes = (0...9).to_a
 
-  if hash.count == 2
-    hash.each do |value, positions|
-      if positions.count == 2
-        $false_hope_pairs[positions] = true
-        $false_hope_pairs[positions.reverse] = true
-      end
-    end
-  end
-end
-
+cells = []
 3.times do |i|
   row = gets.chomp.split.map(&:to_i)
-  grid << row
-  check_false_hope({ [i, 0] => row[0], [i, 1] => row[1], [i, 2] => row[2] })
+  cells += row
 end
 
-3.times do |j|
-  check_false_hope({ [0, j] => grid[0][j], [1, j] => grid[1][j], [2, j] => grid[2][j] })
-end
-
-check_false_hope( {[0, 0] => grid[0][0], [1, 1] => grid[1][1], [2, 2] => grid[2][2] } )
-check_false_hope( {[0, 2] => grid[0][2], [1, 1] => grid[1][1], [2, 0] => grid[2][0] } )
-
-gakkari_count = 0
-all_count = 0
-[[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]].permutation.each do |order|
-  all_count += 1
-  prev_pos = nil
-  order.each do |pos|
-    if prev_pos.nil?
-      prev_pos = pos
-      next
-    end
-
-    if $false_hope_pairs[[prev_pos, pos]]
-      gakkari_count += 1
-      break
-    end
-
-    prev_pos = pos
+gakkari_lines = []
+line_indexes.each do |indexes|
+  i_1, i_2, i_3 = indexes
+  line_values = [cells[i_1], cells[i_2], cells[i_3]].uniq
+  if line_values.count == 2
+    gakkari_lines << indexes
   end
 end
 
-puts (all_count - gakkari_count).to_f / all_count
+if gakkari_lines.empty?
+  puts 1.0
+  exit
+end
+
+not_gakkari_count = 0
+all_count = 0
+cell_indexes.permutation.each do |order|
+  all_count += 1
+
+  gakkari = false
+  gakkari_lines.each do |indexes|
+    line_values_by_order = order.map.with_index { |v, i| indexes.include?(v) ? cells[v] : nil }.compact
+    if line_values_by_order[0] == line_values_by_order[1]
+      gakkari = true
+      break
+    end
+  end
+
+  next if gakkari
+
+  not_gakkari_count += 1
+end
+
+puts not_gakkari_count.to_f / all_count
