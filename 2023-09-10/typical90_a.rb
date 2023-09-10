@@ -7,11 +7,13 @@ yokans = gets.chomp.split.map { |v|
     current_length
 }
 
+# 最後の一切れをカウント
+yokans << l - prev_length
+
 parts_count = k + 1
 ok = yokans.min
 ng = l
 while (ng - ok) > 1
-    pp [ok, ng]
     center = (ok + ng) / 2
 
     count = 1
@@ -26,7 +28,13 @@ while (ng - ok) > 1
         current_length += yokan
     end
 
-    if count >= parts_count && current_length >= center
+    if current_length < center
+        # 最後のようかんがcenter未満の場合はその1つ前のようかんにくっつける
+        count -= 1
+    end
+
+    if count >= parts_count
+        # 所定個数以上に分割できるので、もっと長くできる可能性がある
         ok = center
     else
         # parts_count個に分けるには1個あたりが長すぎる
