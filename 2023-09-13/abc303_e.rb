@@ -13,27 +13,41 @@ end
 
 visited = {}
 restored_tree = tree
+leaves = path_count.to_a.filter_map { |v| v[0] if v[1] == 1 }
 
 tree_sizes = []
-path_count.to_a.sort_by { |v| v[1] }.each do |node, value|
-  next if visited[node]
+until leaves.empty?
+  next_leaves = {}
+  leaves.each do |node|
+    next if visited[node]  # 訪問済みのノードはスキップ
+    visited[node] = true
+    center_node = restored_tree[node].keys.first
+    visited[center_node] = true
 
-  visited[node] = true
-  tree_size = 0
-  center_node = restored_tree[node].keys.first
-  visited[center_node] = true
-  restored_tree[center_node].keys.each do |peripheral|
-    visited[peripheral] = true
-    tree_size += 1
+    tree_size = 0
+    restored_tree[center_node].keys.each do |current_leaf|
+      visited[current_leaf] = true
+      tree_size += 1
 
-    next if restored_tree[peripheral].count == 1
+      next if restored_tree[current_leaf].count == 1
+      restored_tree[current_leaf].keys.each do |drop_leaf|
+        # center以外に繋がっているものは全て後から繋いだものと見なし落とす
+        restored_tree[drop_leaf].delete(current_leaf)
+        path_count[drop_leaf] -= 1
 
-    restored_tree[peripheral].keys.each do |cut_edge|
-      restored_tree[cut_edge].delete(peripheral)
+        # 落とした結果繋がっているノードが1になったら新しく探索対象とする
+        next_leaves[drop_leaf] = true if path_count[drop_leaf] == 1
+      end
+
+      # 念のため今のノードも落としておく
+      restored_tree[current_leaf] = { center_node => true }
+      path_count[current_leaf] = 1
     end
+
+    tree_sizes << tree_size
   end
 
-  tree_sizes << tree_size
+  leaves = next_leaves.keys
 end
 
 puts tree_sizes.sort.join ' '
