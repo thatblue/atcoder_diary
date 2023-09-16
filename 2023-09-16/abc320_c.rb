@@ -1,8 +1,5 @@
 m = gets.chomp.to_i
 reels = []
-common_panels = nil
-shortests = {}
-common_panels = nil
 
 reels << gets.chomp * 3
 reels << gets.chomp * 3
