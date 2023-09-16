@@ -1,30 +1,27 @@
-require 'set'
+# cf. https://atcoder.jp/contests/abc320/submissions/45624536
+require 'ac-library-rb/priority_queue'
 
 n, m = gets.chomp.split.map(&:to_i)
 
 events = []
-presence = SortedSet.new((1..n).to_a)
-comeback = Hash.new {|hash, key| hash[key] = []}
+
+presence = AcLibraryRb::PriorityQueue.new([*1..n]) { |a, b| a < b }
+comeback = AcLibraryRb::PriorityQueue.new { |a, b| a[0] < b[0] }
 gain_somens = Array.new(n + 1, 0)
 m.times do
   time, somen, return_time = gets.chomp.split.map(&:to_i)
 
-  comeback.keys.sort.each do |comeback_time|
-    next if time < comeback_time
-
-    comeback[comeback_time].each do |returned_person|
-      presence.add(returned_person)
-    end
-    comeback.delete(comeback_time)
+  while comeback.get && comeback.get[0] <= time do
+    _, returned_person = comeback.pop
+    presence.push(returned_person)
   end
 
   next if presence.empty?
 
-  gain_person = presence.first
+  gain_person = presence.pop
   gain_somens[gain_person] += somen
 
-  comeback[time + return_time] << gain_person
-  presence.delete(gain_person)
+  comeback.push([time + return_time, gain_person])
 end
 
 puts gain_somens[1..n]
