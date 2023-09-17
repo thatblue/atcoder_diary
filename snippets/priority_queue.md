@@ -18,6 +18,4 @@ pq = AcLibraryRb::PriorityQueue.new([1, 2, 3]) { |a, b| a < b }
 pq.push(123)
 first = pq.pop # 破壊的処理
 first = po.get
-
-
 ```
