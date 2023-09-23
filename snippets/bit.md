@@ -37,3 +37,11 @@ end
 ```ruby
 bit = bits.inject(0) { |result, digit| result (1 << (digit-1)) }
 ```
+
+## n桁のビット全探索
+```ruby
+search_max = 2**n-1
+(0..search_max).each do |bit|
+    puts bit.to_s(2)
+end
+```

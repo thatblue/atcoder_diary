@@ -6,6 +6,43 @@
 array.map.with_index { |v, i| v * i }
 ```
 
+## 先頭・末尾の要素を操作する
+### 要素を追加する
+
+先頭に追加
+```
+array.unshift(0)
+```
+
+末尾に追加
+```
+array << 0
+# もしくは
+array.push(0)
+```
+
+### 要素を取得する
+
+先頭の要素を取得
+```
+# 非破壊
+array[0]
+array.first
+
+# 破壊
+array.shift
+```
+
+末尾の要素を取得
+```
+# 非破壊
+array[-1]
+array.last
+
+# 破壊
+array.pop
+```
+
 ## 0埋めしたN*Nの二次元配列を作る
 ```ruby
 array = Array.new(n) { Array.new(n, 0) }
