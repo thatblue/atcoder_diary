@@ -150,3 +150,13 @@ end
 
 pp matrix
 ```
+
+## 配列のコピー
+
+```ruby
+# 一次元
+copy = array.dup
+
+# 二次元
+copy = array.map(&:dup)
+```
