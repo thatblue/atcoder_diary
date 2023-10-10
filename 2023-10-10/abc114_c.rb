@@ -1,21 +1,32 @@
 n = gets.chomp.to_i
 n_digits = n.to_s.length
 
-numbers_753 = [3, 5, 7].permutation.to_a.map { |v| v.join.to_i }
+def combine_digit(a, b)
+  a.to_s + b.to_s
+end
 
-digits = 4
+candidates_753 = ['3', '5', '7']
+digits = 2
 while n_digits >= digits do
-  (1..digits-2).each do |i|
-    max_j = digits - i - 1
-    (1..max_j).each do |j|
-      k = digits - (i + j)
+  next_numbers = {}
 
-      permutations = (Array.new(i, 3) + Array.new(j, 5) + Array.new(k, 7)).permutation.to_a.map { |v| v.join.to_i }
-      numbers_753 += permutations
+  candidates_753.each do |current_number|
+    [3, 5, 7].each do |add_number|
+      next_numbers[combine_digit(current_number, add_number)] = true
+      next_numbers[combine_digit(add_number, current_number)] = true
     end
   end
 
+  candidates_753 += next_numbers.keys
   digits += 1
+end
+
+numbers_753 = []
+candidates_753.each do |candidate|
+  next unless candidate.index('3')
+  next unless candidate.index('5')
+  next unless candidate.index('7')
+  numbers_753 << candidate.to_i
 end
 
 numbers_753.uniq!
