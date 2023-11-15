@@ -1,29 +1,33 @@
-require "ac-library-rb/priority_queue"
 require "ac-library-rb/dsu"
 
 n, m, k = gets.chomp.split.map(&:to_i)
 
-weights = AcLibraryRb::PriorityQueue.new() { |a, b| a < b }
-paths = Hash.new {|hash, key| hash[key] = []}
-
+paths = []
+graph = Array.new(n + 1) { {} }
 m.times do
   u, v, w = gets.chomp.split.map(&:to_i)
 
-  weights.push(w) unless paths.include?(w)
-  paths[w] << [u, v]
+  graph[u][v] = w
+  graph[v][u] = w
+  paths << [u, v]
 end
 
-ans = 0
-tree = AcLibraryRb::DSU.new(n + 1)
-until weights.empty?
-  min_weight = weights.pop
+ans = k
+paths.combination(n - 1).to_a.each do |current_paths|
+  current_ans = 0
+  tree = AcLibraryRb::DSU.new(n + 1)
+  path_closed = false
+  current_paths.each do |u, v|
+    if tree.same?(u, v)
+      path_closed = true
+      break
+    end
 
-  paths[min_weight].each do |path|
-    next if tree.same?(path[0], path[1])
-
-    tree.merge(path[0], path[1])
-    ans += min_weight
+    tree.merge(u, v)
+    current_ans += graph[u][v]
   end
+
+  ans = [ans, current_ans % k].min unless path_closed
 end
 
-puts ans % k
+puts ans
