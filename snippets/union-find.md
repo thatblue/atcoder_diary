@@ -1,51 +1,22 @@
 # UnionFind
 
-グループ分けを木構造で管理するデータ構造のこと。
+グループ分けを木構造で管理するデータ構造のこと。`ac-library-rb` に `dsu` という名前で入っているのでそれを使うとよい。
 
-実装は以下のとおり。nはデータ構造全体の大きさを表し、グラフ上の座標などノードの値を自然数で表せない場合は何らかの方法で変換する必要がある。
+https://github.com/universato/ac-library-rb/blob/main/document_ja/dsu.md
 
 ```ruby
-class UnionFind
-  def initialize(n)
-    @root = [*0..n]
-    @size = Array.new(n + 1, 1)
-    @tree_count = n
-  end
+require "ac-library-rb/dsu"
 
-  # 指定したノードの根を取得する(このとき、根が更新されていれば反映させる)
-  def root(v)
-    root?(v) ? v : @root[v] = root(@root[v])
-  end
+# 0-indexなので、nまでのIDが欲しい場合はn + 1個宣言して0を使わない運用とする。
+uf_tree = AcLibraryRb::DSU.new(n + 1)
 
-  # 指定したノードが根であるかを取得する
-  def root?(v)
-    @root[v] == v
-  end
+uf_tree.groups # => mergeされているグループのリストを取得する
 
-  # 指定した2つのノードが属するグループをマージする
-  def merge(u, v)
-    return if same_tree?(u, v)
+uf_tree.same?(a, b) # => aとbのノードが連結であるかを取得する
 
-    u_root = root(u)
-    v_root = root(v)
+uf_tree.merge(a, b) # => aとbのノードを連結する
 
-    @size[u_root] += @size[v_root]
-    @root[v_root] = u_root
-    # グループ数はマージに成功するたびに1ずつ減る
-    @tree_count -= 1
-  end
+uf_tree.size(a) # => aが属するグループの要素数を取得する
 
-  # 指定したノードの属するグループのサイズを取得する
-  def size(v)
-    @size[root(v)]
-  end
-
-  # 指定した2つのノードが同じグループに属するかを取得する
-  def same_tree?(u, v)
-    root(u) == root(v)
-  end
-
-  # uf.tree_count でノード群のグループ総数を取得できる
-  attr_reader :tree_count
-end
+uf_tree.groups.size # => グラフ全体のグループの個数を取得する
 ```
