@@ -32,7 +32,7 @@ def dfs(row_index, prev_rows)
   first_char = @r[row_index]
   detected_rows = nil
   # 全ての行に A, B, C がちょうど 1 個ずつ含まれる
-  ['A', 'B', 'C', '.', '.'].permutation.to_a.uniq.each do |order|
+  (['A', 'B', 'C'] + Array.new(@n - 3, '.')).permutation.to_a.uniq.each do |order|
     order_first_char = order.find { |v| v != '.' }
     # 各行に書かれた最も左の文字は上から順に @r の内容である
     next unless first_char == order_first_char
