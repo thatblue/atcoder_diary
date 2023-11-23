@@ -39,22 +39,11 @@ end
 
 ```ruby
 def rle(string)
-  prev_char = string[0]
-  count = 1
-  length = string.length
-
-  compressed = []
-  1.upto(length - 1) do |i|
-    if prev_char != string[i]
-      compressed << [prev_char, count]
-      count = 1
-      prev_char = string[i]
-      next
-    end
-
-    count += 1
+  chunks = []
+  string.chars.chunk { |char| char }.each do |char, ary|
+    chunks << [char, ary.size]
   end
-  compressed << [prev_char, count]
-  compressed
+
+  chunks.map { |char, size| char + size.to_s }.join
 end
 ```
