@@ -1,40 +1,28 @@
-require "ac-library-rb/priority_queue"
+# cf. https://atcoder.jp/contests/abc331/editorial/7853
+# cf. https://atcoder.jp/contests/abc331/submissions/48124046
 
 n, m, l = gets.chomp.split.map(&:to_i)
 
-def init_dishes(dishes)
-  AcLibraryRb::PriorityQueue.new(dishes.map.with_index { |price, index| [index + 1, price] }) { |a, b| a[1] > b[1] }
-end
+main_dishes = gets.chomp.split.map.with_index { |v, i| [v.to_i, i + 1] }.sort.reverse
+side_dishes = gets.chomp.split.map.with_index { |v, i| [v.to_i, i + 1] }.sort.reverse
 
-main_dishes = init_dishes(gets.chomp.split.map(&:to_i))
-side_dishes = init_dishes(gets.chomp.split.map(&:to_i))
-
-@exclude_pairs = {}
+exclude_pairs = {}
 l.times do
-  @exclude_pairs[gets.chomp.split.map(&:to_i)] = true
+  exclude_pairs[gets.chomp.split.map(&:to_i)] = true
 end
 
-@memo = {}
-def dfs(main, side)
-  current_main = main.pop
-  current_side = side.pop
+side_max = side_dishes.first[0]
 
-  return @memo[[current_main[0], current_side[0]]] if @memo.include?([current_main[0], current_side[0]])
+ans = 0
+main_dishes.each do |main_price, main_no|
+  next if main_price + side_max < ans
 
-  return current_main[1] + current_side[1] unless @exclude_pairs.include?([current_main[0], current_side[0]])
+  side_dishes.each do |side_price, side_no|
+    next if exclude_pairs[[main_no, side_no]]
 
-  side.push(current_side)
-
-  next_main_max = main.empty? ? 0 : dfs(main, side)
-
-  side.pop
-  main.push(current_main)
-
-  next_side_max = side.empty? ? 0 : dfs(main, side)
-
-  side.push(current_side)
-
-  @memo[[current_main[0], current_side[0]]] = [next_main_max, next_side_max].max
+    ans = [ans, main_price + side_price].max
+    break
+  end
 end
 
-puts dfs(main_dishes, side_dishes)
+puts ans
