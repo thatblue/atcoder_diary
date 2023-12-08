@@ -102,3 +102,27 @@ def divisors(n)
   end.sort
 end
 ```
+
+## 素数列の生成(エラトステネスのふるい)
+
+処理が終わったタイミングの `primes` が素数列になる。
+```
+# cf. https://algo-method.com/descriptions/64
+
+N_MAX = 300_000
+is_prime = Array.new(N_MAX + 1, true)
+is_prime[0] = false
+is_prime[1] = false
+
+primes = []
+2.upto(N_MAX) do |i|
+  next unless is_prime[i]
+
+  primes << i
+  multiple_of_i = i * 2
+  while multiple_of_i <= N_MAX
+    is_prime[multiple_of_i] = false
+    multiple_of_i += i
+  end
+end
+```
