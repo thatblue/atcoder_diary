@@ -103,6 +103,17 @@ def divisors(n)
 end
 ```
 
+## 素数列の生成(N以下の素数の列挙)
+
+`prime` ライブラリに素数列をeachするメソッドがあるので、素数列が欲しいだけであればそれを使えばよい。
+
+```
+require 'prime'
+N_MAX = 300_000
+
+primes = Prime.instance.each(N_MAX).to_a
+```
+
 ## 素数列の生成(エラトステネスのふるい)
 
 処理が終わったタイミングの `primes` が素数列になる。
