@@ -28,4 +28,4 @@ end
 ans_numbers.uniq!
 ans_numbers.sort!
 
-puts ans_numbers.bsearch_index{|x| x > N } || ans_numbers.size
+puts ans_numbers.bsearch_index { |x| x > N } || ans_numbers.size
