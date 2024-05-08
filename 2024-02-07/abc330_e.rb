@@ -1,10 +1,17 @@
+# cf. https://atcoder.jp/contests/abc330/submissions/47951671
+require 'ac-library-rb/segtree'
+
 n, q = gets.chomp.split.map(&:to_i)
 
 array = gets.chomp.split.map(&:to_i)
-tally = Array.new(n + 2, 0)
+segtree = AcLibraryRb::Segtree.new(n + 2, 0) { |a, b| [a, b].min }
+
+(0..n).each { |i| segtree.set(i, 0) }
 
 array.each do |val|
   # mexの最大値はnなので、n + 1以上は分ける必要がない(データ量が危険かもしれない)
+  segtree.set(val, segtree.get(val) + 1) if tally
+  tally.pop
   next tally[n + 1] += 1 if val > n
 
   tally[val] += 1

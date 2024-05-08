@@ -12,8 +12,10 @@ require "ac-library-rb/priority_queue"
 
 pq = AcLibraryRb::PriorityQueue.new([1, 2, 3])
 
-# 数値がランクを示している場合はこのように書く
-pq = AcLibraryRb::PriorityQueue.new([1, 2, 3]) { |a, b| a < b }
+# 小さい順にソートしたい場合はminを使う
+pq = AcLibraryRb::PriorityQueue.min([1, 2, 3])
+
+# 特殊なソートをしたい場合はブロックを使う
 
 pq.push(123)
 first = pq.pop # 破壊的処理
