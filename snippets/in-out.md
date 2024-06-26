@@ -62,16 +62,16 @@ end
 ### 数値1つを出力
 
 ```ruby
-p num
+puts num
 ```
 
 ### 配列の値を結合して文字列として出力する
 #### 区切り文字が不要な場合
 ```ruby
-print array.join + "\n"
+puts array.join
 ```
 
 #### 区切り文字が必要な場合
 ```ruby
-print array.join(" ") + "\n"
+puts array.join ' '
 ```
